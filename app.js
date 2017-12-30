@@ -11,7 +11,7 @@ loadEventListeners();
 // Load all Event Listeners
 function loadEventListeners() {
   // Dom Load Event
-  document.addEventListener('DOMContentLoader', getTasks);
+  document.addEventListener('DOMContentLoaded', getTasks);
   // Add task event
   form.addEventListener('submit', addTask);
 // Remove task event
@@ -114,8 +114,29 @@ function removeTask(e) {
     if(confirm('Are you sure')) {
     e.target.parentElement.parentElement.remove();
 
+    // Rmove from LS
+    removeTaskFromLocalStorage(e.target.parentElement.parentElement);
+
     }
   }
+}
+
+// Remove from local storage
+function removeTaskFromLocalStorage(taskItem) {
+  let tasks;
+  if(localStorage.getItem('tasks') === null){
+    tasks = [];
+  } else {
+    tasks = JSON.parse(localStorage.getItem('tasks'));
+  }
+
+  tasks.forEach(function(task, index){
+    if(taskItem.textContent === task){
+      tasks.splice(index, 1);
+    }
+  });
+
+  localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
 // Clear Task
@@ -128,7 +149,18 @@ while(taskList.firstChild) {
   taskList.removeChild(taskList.firstChild);
 }
 
+// Clear from Local Storage
+clearTasksFromLocalStorage();
+
+
 }
+
+// Clear Tasks from Local Stoarge
+function clearTasksFromLocalStorage() {
+  localStorage.clear();
+}
+
+
 
 // Filter Tasks
 function filterTasks(e) {
